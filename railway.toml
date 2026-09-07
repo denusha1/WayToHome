@@ -1,0 +1,8 @@
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "apps/api/Dockerfile"
+[deploy]
+preDeployCommand = ["npm run db:migrate"]
+healthcheckPath = "/api/health/ready"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
