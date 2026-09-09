@@ -14,6 +14,8 @@ import {
 } from 'lucide-react';
 import { api, Trip } from '@/lib/api';
 import { today, time, dateLabel, money } from '@/lib/utils';
+import { RouteMemory } from './route-memory';
+import { JourneyComparison } from './journey-comparison';
 import { BookingDialog } from './booking-dialog';
 import { Button } from './ui/button';
 import { Text, usePreferences } from './preferences';
@@ -58,6 +60,9 @@ export function Journeys() {
   const [page, setPage] = useState(1);
   const [trip, setTrip] = useState<Trip | null>(null);
   const [refresh, setRefresh] = useState(0);
+  const [sort, setSort] = useState('departure');
+  const [availableOnly, setAvailableOnly] = useState(false);
+  const [compared, setCompared] = useState<string[]>([]);
   useEffect(() => {
     api<string[]>('/cities')
       .then(setCities)
@@ -67,6 +72,7 @@ export function Journeys() {
       .catch(() => {});
   }, []);
   useEffect(() => {
+    setCompared([]);
     setFrom(origin);
     setTo(destination);
     setDate(selectedDate);
@@ -122,6 +128,7 @@ export function Journeys() {
         .filter((t) => {
           const hour = Number(time(t.departure).slice(0, 2));
           return (
+            (!availableOnly || t.available > 0) &&
             (!operator || t.bus === operator) &&
             (!via || [t.boarding, t.dropping].includes(via)) &&
             (!departure ||
@@ -130,8 +137,17 @@ export function Journeys() {
               (departure === 'night' && (hour >= 18 || hour < 5)))
           );
         })
-        .sort((a, b) => Date.parse(a.departure) - Date.parse(b.departure)),
-    [trips, operator, via, departure],
+        .sort(
+          (a, b) =>
+            (sort === 'price'
+              ? a.price - b.price
+              : sort === 'duration'
+                ? a.duration - b.duration
+                : sort === 'seats'
+                  ? b.available - a.available
+                  : 0) || Date.parse(a.departure) - Date.parse(b.departure),
+        ),
+    [trips, operator, via, departure, sort, availableOnly],
   );
   const pages = Math.max(1, Math.ceil(filtered.length / 6));
   const current = Math.min(page, pages);
@@ -235,6 +251,11 @@ export function Journeys() {
             <Text text="Journeys" />
           </span>
         </nav>
+        <RouteMemory
+          from={origin}
+          to={destination}
+          onChoose={(a, b) => navigate(selectedDate, a, b)}
+        />
         <div className="journeys-layout">
           <aside className="journey-filters">
             <h2>
@@ -300,6 +321,7 @@ export function Journeys() {
             <button
               className="clear-filters"
               onClick={() => {
+                setAvailableOnly(false);
                 setDeparture('');
                 setVia('');
                 setOperator('');
@@ -361,6 +383,36 @@ export function Journeys() {
                   <Text text="Demo preview" />
                 </span>
               )}
+            </div>
+            <div className="journey-tools">
+              <label>
+                {tr('Sort by')}
+                <select
+                  aria-label={tr('Sort by')}
+                  value={sort}
+                  onChange={(e) => {
+                    setSort(e.target.value);
+                    setPage(1);
+                  }}
+                >
+                  <option value="departure">{tr('Earliest departure')}</option>
+                  <option value="price">{tr('Lowest fare')}</option>
+                  <option value="duration">{tr('Shortest journey')}</option>
+                  <option value="seats">{tr('Most seats available')}</option>
+                </select>
+              </label>
+              <label className="availability-toggle">
+                <input
+                  type="checkbox"
+                  checked={availableOnly}
+                  onChange={(e) => {
+                    setAvailableOnly(e.target.checked);
+                    setPage(1);
+                  }}
+                />
+                {tr('Available seats only')}
+              </label>
+              <small>{tr('Select up to 3 buses to compare')}</small>
             </div>
             {busy || navigating ? (
               <div className="journey-empty" role="status">
@@ -469,6 +521,23 @@ export function Journeys() {
                         <Text text="This journey arrives the next day. Please plan accordingly." />
                       </p>
                     )}
+                    <label className="compare-checkbox">
+                      <input
+                        type="checkbox"
+                        checked={compared.includes(t.id)}
+                        disabled={
+                          !compared.includes(t.id) && compared.length >= 3
+                        }
+                        onChange={(e) =>
+                          setCompared((old) =>
+                            e.target.checked
+                              ? [...old, t.id]
+                              : old.filter((id) => id !== t.id),
+                          )
+                        }
+                      />
+                      {tr('Add to comparison')}
+                    </label>
                     <div className="journey-card-actions">
                       <div className="journey-disclosures">
                         <details>
@@ -537,6 +606,14 @@ export function Journeys() {
           </section>
         </div>
       </div>
+      {!busy && !navigating && (
+        <JourneyComparison
+          trips={compared.flatMap((id) => trips.filter((t) => t.id === id))}
+          onClear={() => setCompared([])}
+          onRemove={(id) => setCompared((old) => old.filter((x) => x !== id))}
+          onBook={setTrip}
+        />
+      )}
       {trip && (
         <BookingDialog
           trip={trip}

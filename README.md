@@ -2,6 +2,13 @@
 
 A Sri Lankan bus booking application with a Next.js + TypeScript frontend, Tailwind CSS, shadcn-style Radix UI components, a NestJS API, PostgreSQL/Prisma, Supabase Auth, Socket.IO seat availability, PayHere checkout, QR tickets, and an admin dashboard.
 
+## Portfolio and launch guide
+
+- [Who does what and step-by-step setup](docs/START-HERE.md)
+- [Architecture, demo narration and interview preparation](docs/PORTFOLIO.md)
+- [Local booking walkthrough video](docs/demo/booking-walkthrough.webm) — simulated payment, not live provider verification
+- [Public sandbox release checklist](docs/RELEASE.md)
+
 ## Run locally
 
 Use Node.js 22 or newer. From the repository root:
@@ -121,3 +128,5 @@ When no Supabase keys are configured, the interface displays a service-unavailab
 See [docs/RELEASE.md](docs/RELEASE.md) for the production variable templates, provider setup, deployment order and live acceptance checks. `npm run deploy:check` reports missing configuration without revealing secret values. No public deployment or live provider transactions have been completed from this workspace.
 
 Bookings/admin pages now verify access with `/api/me` before mounting private content. The API independently verifies Supabase tokens and the server-owned admin allowlist. Safe local return destinations preserve the sign-in journey. Unpaid cancellation and paid cancellation requests are available from My bookings. Admins can approve a full PayHere refund using separate Merchant API credentials; a transaction claim prevents concurrent/automatic duplicate requests, and provider uncertainty requires manual reconciliation. Demo refunds never move money. Apply the new refund migration before running the updated API against PostgreSQL.
+
+Journey discovery also includes lowest-fare/shortest-duration/seat-count sorting, an available-seats filter and side-by-side comparison of up to three buses. Comparison uses the current search results; availability is checked again by the existing seat picker. Up to five saved routes and five recent route searches are stored only in the current browser, with remove/clear controls. No passenger or payment information is saved by route shortcuts.

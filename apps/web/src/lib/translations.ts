@@ -1,4 +1,38 @@
 export const translations: Record<string, { ta: string; si: string }> = {
+  'Your familiar roads': {
+    ta: 'உங்கள் பழகிய பாதைகள்',
+    si: 'ඔබේ හුරුපුරුදු මාවත්',
+  },
+  'Saved on this browser': {
+    ta: 'இந்த உலாவியில் சேமிக்கப்பட்டது',
+    si: 'මෙම බ්‍රවුසරයේ සුරැකේ',
+  },
+  'Save this route': { ta: 'இந்த வழியைச் சேமி', si: 'මෙම මාර්ගය සුරකින්න' },
+  'Route saved': { ta: 'வழி சேமிக்கப்பட்டது', si: 'මාර්ගය සුරැකිණි' },
+  'Recent searches': { ta: 'சமீபத்திய தேடல்கள்', si: 'මෑත සෙවුම්' },
+  'Clear history': { ta: 'வரலாற்றை அழி', si: 'ඉතිහාසය මකන්න' },
+  'Sort by': { ta: 'வரிசைப்படுத்து', si: 'අනුපිළිවෙළ' },
+  'Earliest departure': { ta: 'முதலில் புறப்படுவது', si: 'මුල්ම පිටත්වීම' },
+  'Lowest fare': { ta: 'குறைந்த கட்டணம்', si: 'අඩුම ගාස්තුව' },
+  'Shortest journey': { ta: 'குறுகிய பயணம்', si: 'කෙටිම ගමන' },
+  'Most seats available': { ta: 'அதிக இருக்கைகள்', si: 'වැඩිම ආසන' },
+  'Available seats only': {
+    ta: 'இருக்கைகள் உள்ளவை மட்டும்',
+    si: 'ආසන ඇති ගමන් පමණි',
+  },
+  'Add to comparison': {
+    ta: 'ஒப்பீட்டில் சேர்க்கவும்',
+    si: 'සැසඳීමට එක් කරන්න',
+  },
+  'Compare your options': {
+    ta: 'உங்கள் தேர்வுகளை ஒப்பிடுங்கள்',
+    si: 'ඔබේ තේරීම් සසඳන්න',
+  },
+  'Compare journeys': { ta: 'பயணங்களை ஒப்பிடு', si: 'ගමන් සසඳන්න' },
+  Clear: { ta: 'அழி', si: 'මකන්න' },
+  Remove: { ta: 'நீக்கு', si: 'ඉවත් කරන්න' },
+  Duration: { ta: 'பயண நேரம்', si: 'ගමන් කාලය' },
+  Amenities: { ta: 'வசதிகள்', si: 'පහසුකම්' },
   Journeys: { ta: 'பயணங்கள்', si: 'ගමන්' },
   'Your next happy journey.': {
     ta: 'உங்கள் அடுத்த மகிழ்ச்சியான பயணம்.',
