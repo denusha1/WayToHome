@@ -1,0 +1,29 @@
+{
+  "name": "way-to-home",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -n web,api -c green,cyan \"npm run dev -w @waytohome/web\" \"npm run dev -w @waytohome/api\"",
+    "build": "npm run build -w @waytohome/api && npm run build -w @waytohome/web",
+    "typecheck": "npm run typecheck --workspaces",
+    "test": "npm run test -w @waytohome/api",
+    "db:generate": "npm run db:generate -w @waytohome/api",
+    "db:migrate": "npm run db:migrate -w @waytohome/api",
+    "db:seed": "npm run db:seed -w @waytohome/api",
+    "test:e2e": "playwright test",
+    "test:db": "npm run test:db -w @waytohome/api",
+    "format": "prettier --write .",
+    "test:web": "npm run test -w @waytohome/web",
+    "deploy:check": "node scripts/check-deployment.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.0",
+    "concurrently": "^9.2.1",
+    "prettier": "^3.9.6"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

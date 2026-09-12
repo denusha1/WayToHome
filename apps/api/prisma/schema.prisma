@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client-js"
+}
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+model Bus {
+  id         String @id @default(uuid())
+  name       String
+  plate      String @unique
+  capacity   Int
+  amenities  String[]
+  trips      Trip[]
+}
+model Route {
+  id           String @id @default(uuid())
+  from         String
+  to           String
+  duration     Int
+  boarding     String
+  dropping     String
+  trips        Trip[]
+}
+model Trip {
+  id           String @id @default(uuid())
+  busId        String
+  routeId      String
+  bus          Bus @relation(fields: [busId], references: [id])
+  route        Route @relation(fields: [routeId], references: [id])
+  departure    DateTime
+  price        Int
+  bookings     Booking[]
+  reservations Reservation[]
+  location     VehicleLocation?
+  @@index([departure, routeId])
+}
+model Booking {
+  id           String @id
+  tripId       String
+  trip         Trip @relation(fields: [tripId], references: [id])
+  userId       String
+  seats        Int[]
+  amount       Int
+  status       String
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+  name         String @default("")
+  email        String @default("")
+  phone        String @default("")
+  address      String @default("")
+  city         String @default("")
+  paymentId    String? @unique
+  refundRequestedAt DateTime?
+  refundReason String?
+  refundReference String?
+  refundedAt DateTime?
+  refundApprovedBy String?
+  checkedInAt  DateTime?
+  emailSent    Boolean @default(false)
+  smsSent      Boolean @default(false)
+  reservations Reservation[]
+  @@index([userId, createdAt])
+  @@index([tripId, status])
+}
+model Reservation {
+  id          String @id @default(uuid())
+  tripId      String
+  trip        Trip @relation(fields: [tripId], references: [id])
+  bookingId   String
+  booking     Booking @relation(fields: [bookingId], references: [id])
+  seat        Int
+  @@unique([tripId, seat])
+}
+model VehicleLocation {
+  tripId    String @id
+  trip      Trip @relation(fields: [tripId], references: [id])
+  latitude  Float
+  longitude Float
+  updatedAt DateTime @updatedAt
+}
