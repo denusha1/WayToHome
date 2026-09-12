@@ -10,6 +10,7 @@ import './auth.css';
 import './footer.css';
 import './journeys.css';
 import './page-polish.css';
+import './premium.css';
 export const metadata: Metadata = {
   title: 'Way To Home | Your Journey Home Starts Here',
   description:

@@ -3,19 +3,13 @@ import { Text } from '@/components/preferences';
 
 import Link from 'next/link';
 import { useState } from 'react';
-import {
-  ArrowUpRight,
-  BusFront,
-  Menu,
-  X,
-  Moon,
-  Sun,
-  Languages,
-} from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import { ArrowUpRight, Menu, X, Moon, Sun, Languages } from 'lucide-react';
 import { Button } from './ui/button';
 import { usePreferences, type Language } from './preferences';
 export function Header() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
   const { dark, toggleTheme, language, setLanguage, tr } = usePreferences();
   return (
     <>
@@ -110,15 +104,28 @@ export function Header() {
         </Link>
         <nav
           className={open ? 'nav-links open' : 'nav-links'}
+          id="main-navigation"
           aria-label="Main navigation"
         >
-          <Link href="/journeys" onClick={() => setOpen(false)}>
+          <Link
+            href="/journeys"
+            aria-current={pathname === '/journeys' ? 'page' : undefined}
+            onClick={() => setOpen(false)}
+          >
             <Text text={'Book a journey'} />
           </Link>
-          <Link href="/bookings" onClick={() => setOpen(false)}>
+          <Link
+            href="/bookings"
+            aria-current={pathname === '/bookings' ? 'page' : undefined}
+            onClick={() => setOpen(false)}
+          >
             <Text text={'My bookings'} />
           </Link>
-          <Link href="/contact" onClick={() => setOpen(false)}>
+          <Link
+            href="/contact"
+            aria-current={pathname === '/contact' ? 'page' : undefined}
+            onClick={() => setOpen(false)}
+          >
             <Text text={'Contact'} />
           </Link>
         </nav>
@@ -133,7 +140,11 @@ export function Header() {
           className="mobile-menu"
           aria-label="Toggle menu"
           aria-expanded={open}
+          aria-controls="main-navigation"
           onClick={() => setOpen(!open)}
+          onKeyDown={(event) => {
+            if (event.key === 'Escape') setOpen(false);
+          }}
         >
           {open ? <X /> : <Menu />}
         </Button>

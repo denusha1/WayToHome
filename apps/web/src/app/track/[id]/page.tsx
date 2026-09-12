@@ -40,9 +40,24 @@ export default function TrackingPage() {
     ? `${data.location.latitude},${data.location.longitude}`
     : '';
   return (
-    <main id="main" className="inner-page section-container">
-      <div className="eyebrow">YOUR BUS, ON ITS WAY</div>
-      <h1>Follow your journey.</h1>
+    <main id="main" className="inner-page section-container tracking-page">
+      <section className="tracking-masthead">
+        <span className="tracking-icon" aria-hidden="true">
+          <BusFront size={32} />
+        </span>
+        <div>
+          <div className="eyebrow">YOUR BUS, ON ITS WAY</div>
+          <h1>Follow your journey.</h1>
+          <p>From your boarding point to your homecoming.</p>
+        </div>
+      </section>
+      {!data && !error && (
+        <div className="tracking-loading" role="status">
+          <MapPin size={28} />
+          <p>Finding your bus location…</p>
+          <div className="loading-line" aria-hidden="true" />
+        </div>
+      )}
       {error && (
         <p role="alert" className="error-message">
           {error}

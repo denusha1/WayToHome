@@ -73,7 +73,7 @@ export default function Admin() {
     }
   }
   return (
-    <main id="main" className="inner-page section-container">
+    <main id="main" className="inner-page section-container admin-page">
       <div className="eyebrow">WAY TO HOME · OPERATIONS</div>
       <h1>A smooth journey starts here.</h1>
       <p className="text-muted-foreground">
@@ -136,6 +136,7 @@ export default function Admin() {
             ].map((t) => (
               <Button
                 key={t}
+                aria-pressed={tab === t}
                 variant={tab === t ? 'default' : 'outline'}
                 onClick={() => setTab(t)}
               >
